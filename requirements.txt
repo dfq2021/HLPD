@@ -1,0 +1,25 @@
+# core (training / evaluation / CLI demo)
+torch>=2.1
+transformers>=4.40,<5
+peft>=0.10
+accelerate
+safetensors
+datasets
+scikit-learn
+numpy
+tqdm
+huggingface_hub
+sentencepiece
+tensorboard
+matplotlib
+
+# web demo
+gradio>=4.0,<6
+
+# data construction with API models (tools/adversarial_prompt_generator.py, tools/build_*_data.py)
+openai>=1.0
+requests
+
+# ablation_exp (SFT / RLHF / ORPO baselines, same pins as ImBD)
+trl==0.12.1
+bitsandbytes

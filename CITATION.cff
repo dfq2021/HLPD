@@ -1,0 +1,25 @@
+cff-version: 1.2.0
+message: "If you use HLPD, please cite the paper below."
+title: "HLPD: Aligning LLMs to Human Language Preference for Machine-Revised Text Detection"
+authors:
+  - family-names: Dai
+    given-names: Fangqi
+  - family-names: Jiang
+    given-names: Xingjian
+  - family-names: Deng
+    given-names: Zizhuang
+repository-code: "https://github.com/dfq2021/HLPD"
+license: MIT
+preferred-citation:
+  type: conference-paper
+  title: "HLPD: Aligning LLMs to Human Language Preference for Machine-Revised Text Detection"
+  authors:
+    - family-names: Dai
+      given-names: Fangqi
+    - family-names: Jiang
+      given-names: Xingjian
+    - family-names: Deng
+      given-names: Zizhuang
+  collection-title: "Proceedings of the AAAI Conference on Artificial Intelligence (AAAI)"
+  year: 2026
+  url: "https://arxiv.org/abs/2511.06942"

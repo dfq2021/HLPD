@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) 2025 Dai Fangqi
+Copyright (c) 2025 Fangqi Dai, Xingjian Jiang, Zizhuang Deng
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -19,3 +19,9 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+---------------------------------------------------------------------------
+Third-party code (see THIRD_PARTY_NOTICES.md):
+  other_models/, ablation_exp/, tools/data_builder.py, tools/truncation.py,
+  tools/count_words.py, tools/solve_llama_output.py are adapted from ImBD
+  (Apache License 2.0) and Fast-DetectGPT / DetectGPT (MIT License).
