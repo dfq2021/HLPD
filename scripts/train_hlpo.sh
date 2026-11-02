@@ -2,6 +2,7 @@
 # HLPO training (paper setting): GPT-Neo-2.7B + LoRA, 2 epochs, lr 1e-4, beta_0 = 0.05,
 # linear objective + Dynamic-beta, all 3,354 multi-task revision pairs.
 # ~40 GB GPU memory (scoring + reference model), ~12 min / epoch on an L20.
+# On a 24 GB GPU add --share_reference --gradient_checkpointing.
 python -m hlpd.train \
     --task_name hlpd_multitask \
     --train_dataset data/train/train_multitask_revision.raw_data.json \

@@ -116,11 +116,16 @@ class HLPDScorer(nn.Module):
     use_lora : bool
         Attach a LoRA adapter (the standard setting).  ``False`` is used to
         evaluate fully fine-tuned ablation models (SFT / RLHF / ORPO).
+    share_reference : bool
+        Compute ``p_ref`` with the scoring model's LoRA adapter disabled
+        instead of loading a second copy of the base model.  The reference
+        LoRA is an identity, so ``p_ref`` is unchanged while GPU memory is
+        roughly halved (fits 24 GB cards).
     """
 
     def __init__(self, scoring_model_name="gpt-neo-2.7B", reference_model_name="gpt-neo-2.7B",
                  loss=None, use_lora=True, dataset="xsum", device="cuda", cache_dir="./models",
-                 lora_r=8, lora_alpha=32, lora_dropout=0.1, load_reference=True):
+                 lora_r=8, lora_alpha=32, lora_dropout=0.1, load_reference=True, share_reference=False):
         super().__init__()
         self.device = device
         self.cache_dir = cache_dir
@@ -138,8 +143,9 @@ class HLPDScorer(nn.Module):
         scoring_model = load_base_model(scoring_model_name, device, cache_dir)
         self.scoring_model = get_peft_model(scoring_model, self.peft_config) if use_lora else scoring_model
 
+        self.share_reference = share_reference and use_lora
         self.reference_model = None
-        if load_reference:
+        if load_reference and not self.share_reference:
             reference_model = load_base_model(reference_model_name, device, cache_dir)
             # the reference LoRA is never updated (initialised as identity), so p_ref == base model
             self.reference_model = get_peft_model(reference_model, self.peft_config) if use_lora else reference_model
@@ -199,8 +205,12 @@ class HLPDScorer(nn.Module):
             crit, logprob = self.criterion_fn(logits, logits, labels)
             return crit, logprob, logits
         with torch.no_grad():
-            ref = self.reference_model if self.reference_model is not None else self.scoring_model
-            logits = self._logits(ref, tokenized)
+            if self.share_reference:
+                with self.scoring_model.disable_adapter():
+                    logits = self._logits(self.scoring_model, tokenized)
+            else:
+                ref = self.reference_model if self.reference_model is not None else self.scoring_model
+                logits = self._logits(ref, tokenized)
             crit, logprob = self.criterion_fn(logits, logits, labels)
             return crit, logprob, logits
 

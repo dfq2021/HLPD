@@ -175,6 +175,8 @@ Key options of `python -m hlpd.train`:
 |---|---|---|
 | `--loss {linear,sigmoid}` | `linear` | HLPO objective (`‡`) or DPO/ImBD-style sigmoid |
 | `--no_dynamic_beta` | off | fixed β instead of the Dynamic-β scheduler (`⋆`) |
+| `--share_reference` | off | compute `p_ref` with the LoRA adapter disabled instead of a second model copy — same `p_ref`, about half the GPU memory |
+| `--gradient_checkpointing` | off | recompute activations in the backward pass (with `--share_reference`, training fits a 24 GB GPU) |
 | `--beta` | 0.05 | initial / fixed β |
 | `--datanum` | −1 (all) | number of training pairs |
 | `--train_dataset` | multi-task set | any `original` / `sampled` paired file |

@@ -72,6 +72,10 @@ def build_parser():
     p.add_argument("--lora_dropout", type=float, default=0.1)
     p.add_argument("--no_lora", action="store_true",
                    help="evaluate a fully fine-tuned base model (SFT / RLHF / ORPO ablations)")
+    p.add_argument("--share_reference", action="store_true",
+                   help="reference = scoring model with the adapter disabled (one model in memory, fits 24 GB GPUs)")
+    p.add_argument("--gradient_checkpointing", action="store_true",
+                   help="recompute activations in the backward pass (less GPU memory, ~30%% slower)")
     # models / io
     p.add_argument("--base_model", type=str, default="gpt-neo-2.7B")
     p.add_argument("--cache_dir", type=str, default="./models")
@@ -95,10 +99,14 @@ def build_model(args):
                     window_size=args.beta_window, low_var=args.beta_low_var, high_var=args.beta_high_var)
     model = HLPDScorer(args.base_model, args.base_model, loss=loss, use_lora=not args.no_lora,
                        device=args.device, cache_dir=args.cache_dir,
-                       lora_r=args.lora_r, lora_alpha=args.lora_alpha, lora_dropout=args.lora_dropout)
+                       lora_r=args.lora_r, lora_alpha=args.lora_alpha, lora_dropout=args.lora_dropout,
+                       share_reference=args.share_reference)
     if args.from_pretrained:
         print(f"Loading checkpoint from {args.from_pretrained} ...")
         model.from_pretrained(args.from_pretrained)
+    if args.gradient_checkpointing and not args.eval_only:
+        model.scoring_model.gradient_checkpointing_enable(gradient_checkpointing_kwargs={"use_reentrant": False})
+        model.scoring_model.config.use_cache = False
     return model
 
 
